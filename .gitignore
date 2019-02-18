@@ -1,3 +1,9 @@
+# Custom
+.vs
+data
+Debug
+Release
+
 # Prerequisites
 *.d
 
