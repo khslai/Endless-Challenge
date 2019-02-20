@@ -743,8 +743,19 @@ void UpdatePad(void)
 			padRepeat[i] = 0;
 		}
 
+
+#if _DEBUG
+		for (int i = 0; i < 20; i++)
+		{
+			if (dijs.rgbButtons[i] != 0)
+			{
+				PrintDebugMsg("Button No. :%d, %d\n", i,dijs.rgbButtons[i]);
+			}
+		}
 		PrintDebugMsg("dijs.lRx : %d\n", dijs.lRx);
 		PrintDebugMsg("dijs.lRy : %d\n", dijs.lRy);
+#endif
+
 	}
 
 	return;

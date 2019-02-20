@@ -39,6 +39,7 @@ static const EFK_CHAR* EffectFileName[] =
 	(const EFK_CHAR*)L"data/Effects/HitEffect/HitFire.efk",
 	(const EFK_CHAR*)L"data/Effects/HitEffect/HitFire_Phase2.efk",
 	(const EFK_CHAR*)L"data/Effects/HitEffect/HitLight.efk",
+	(const EFK_CHAR*)L"data/Effects/LockOn/LockOn.efk",
 	(const EFK_CHAR*)L"data/Effects/SummonSword/SummonSword.efk",
 	(const EFK_CHAR*)L"data/Effects/ExplodeFire/ExplodeFire.efk",
 	(const EFK_CHAR*)L"data/Effects/ExplodeFire/ExplodeFire_Phase2.efk",
@@ -147,9 +148,11 @@ void UpdateEffect(void)
 	static int Count = 0;
 	int Effect_No = 0;
 	int EffectID = 0;
+	int GameStage = GetGameStage();
 	PLAYER *Player = GetPlayer();
 	BOSS *Boss = GetBoss();
 	CUBE *Cube = GetCube();
+	CAMERA_3RD *Camera = GetCamera_3rd();
 
 	for (Effect_No = 0; Effect_No < EffectMax; Effect_No++)
 	{
@@ -160,6 +163,7 @@ void UpdateEffect(void)
 			{
 				if (Effect[Effect_No].EffectType == BossDeath)
 				{
+					Count = 0;
 					Boss->Exist = false;
 					SetTransition(Fadein);
 				}
@@ -183,6 +187,24 @@ void UpdateEffect(void)
 			case HitLight:
 				EffectCtrl.Manager->SetLocation(EffectID, DXtoEffekVec(Cube->Pos));
 				break;
+			case LockOn:
+				if (Camera->InLockOn == true)
+				{
+					if (GameStage == Stage_Tutorial)
+					{
+						EffectCtrl.Manager->SetLocation(EffectID, DXtoEffekVec(Cube->Pos));
+					}
+					else if (GameStage == Stage_Game)
+					{
+						EffectCtrl.Manager->SetLocation(EffectID, DXtoEffekVec(Boss->CenterPos));
+					}
+				}
+				else
+				{
+					EffectCtrl.Manager->StopEffect(Effect[Effect_No].ID);
+					Effect[Effect_No].Use = false;
+				}
+				break;
 			case BossDebut:
 				Count++;
 				if (Count >= 300)
@@ -202,7 +224,6 @@ void UpdateEffect(void)
 				if (Count >= 150)
 				{
 					Boss->Exist = false;
-					Count = 0;
 				}
 				break;
 			case MagicCircle:

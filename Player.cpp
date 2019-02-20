@@ -251,6 +251,14 @@ HRESULT InitPlayer(bool FirstInit)
 			return E_FAIL;
 		}
 	}
+	else
+	{
+		Player.Animation->MotionEnd = false;
+		Player.Animation->StartMove = false;
+		Player.Animation->SlashTrack = false;
+		Player.Animation->MotionBlendOver = false;
+		Player.Animation->Cancelable = false;
+	}
 
 	return S_OK;
 }

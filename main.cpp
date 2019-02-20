@@ -637,11 +637,14 @@ void Uninit(void)
 	// デバッグ表示処理の終了処理
 	UninitDebugProcess();
 
+	// サウンドの終了処理
+	UninitSound();
+
 	// 当たり範囲表示の終了処理
 	UninitAttackRange();
 
-	// サウンドの終了処理
-	UninitSound();
+	// カメラの終了処理
+	UninitCamera_3rd();
 
 	// シーン遷移画面の終了処理
 	UninitTransition();
@@ -902,14 +905,14 @@ void Draw(void)
 		{
 		case Stage_Title:
 
-			// カメラの設定
-			SetCamera_3rd();
-
 			// シャッドテクスチャの描画
 			DrawShadowTexture();
 
 			// 地面の描画
 			DrawStage();
+
+			// カメラの設定
+			SetCamera_3rd();
 
 			// 空の描画
 			DrawSkyBox();
@@ -941,9 +944,6 @@ void Draw(void)
 			// プレイヤーの描画
 			DrawPlayer();
 
-			// エフェクトの描画
-			DrawEffect();
-
 			// 剣の召喚の描画
 			DrawSummonSword();
 
@@ -953,8 +953,14 @@ void Draw(void)
 			// UIゲージの描画
 			DrawGauge();
 
-			// チュートリアルの描画
-			DrawTutorial();
+			// チュートリアルチューブの描画
+			DrawTutorialCube();
+
+			// エフェクトの描画
+			DrawEffect();
+
+			// チュートリアルテキストの描画
+			DrawTutorialText();
 
 			break;
 		case Stage_Game:

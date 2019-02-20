@@ -131,7 +131,7 @@ HRESULT InitBoss(bool FirstInit)
 	Boss.HPDecreaseStart = false;
 	Boss.SetFireSword = false;
 	Boss.GiveDamage = false;
-	Boss.TurnRotation = false;
+	Boss.TurnRotation = true;
 	Boss.JumpState = Jump_Stop;
 	Boss.DistanceState = -1;
 
@@ -291,6 +291,14 @@ HRESULT InitBoss(bool FirstInit)
 		{
 			return E_FAIL;
 		}
+	}
+	else
+	{
+		Boss.Animation->MotionEnd = false;
+		Boss.Animation->StartMove = false;
+		Boss.Animation->SlashTrack = false;
+		Boss.Animation->MotionBlendOver = false;
+		Boss.Animation->Cancelable = false;
 	}
 
 	return S_OK;

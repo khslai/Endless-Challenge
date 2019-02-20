@@ -64,7 +64,8 @@ void UninitTutorial(void);
 // 更新処理
 void UpdateTutorial(void);
 // 描画処理
-void DrawTutorial(void);
+void DrawTutorialText(void);
+void DrawTutorialCube(void);
 // チュートリアルの状態を設置する
 void SetTutorialState(int State);
 // チュートリアルの状態を取得する

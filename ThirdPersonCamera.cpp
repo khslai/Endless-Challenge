@@ -11,17 +11,18 @@
 #include "Player.h"
 #include "Boss.h"
 #include "Tutorial.h"
+#include "Effect.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define CameraDistance_Max	(300.0f)					// カメラと注視点の距離の範囲
+#define CameraDistance_Max	(300.0f)						// カメラと注視点の距離の範囲
 #define CameraDistance_Min	(100.0f)
-#define CameraAngle_Max		(D3DXToRadian(150.0f))		// カメラ上下の移動角度範囲					
+#define CameraAngle_Max		(D3DXToRadian(150.0f))			// カメラ上下の移動角度範囲					
 #define CameraAngle_Min		(D3DXToRadian(30.0f))
-#define DefaultAngle		(D3DXToRadian(70.0f))		// カメラの初期角度
-#define DefaultDistance		(250.0f)					// カメラと注視点の初期距離
-#define ResetSpeed			(0.3f)						// リセット速度
+#define DefaultAngle		(D3DXToRadian(70.0f))			// カメラの初期角度
+#define DefaultDistance		(250.0f)						// カメラと注視点の初期距離
+#define ResetSpeed			(0.3f)							// リセット速度
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -36,7 +37,6 @@ void Approach(float dist);
 void ResetCamera(void);
 // 目標をロックオン
 void LockOnTarget(D3DXVECTOR3 TargetPos);
-
 
 //*****************************************************************************
 // グローバル変数
@@ -136,6 +136,14 @@ void UpdateCamera_3rd(void)
 		Camera_3rd.InLockOn = Camera_3rd.InLockOn ? false : true;
 		Camera_3rd.Distance = 300.0f;
 		Camera_3rd.Angle_Xaxis = D3DXToRadian(45.0f);
+		if (GameStage == Stage_Tutorial)
+		{
+			SetEffect(Cube->Pos, LockOn);
+		}
+		else if (GameStage == Stage_Game)
+		{
+			SetEffect(Boss->CenterPos, LockOn);
+		}
 	}
 
 	if (Camera_3rd.InLockOn == false)
@@ -426,7 +434,6 @@ void LockOnTarget(D3DXVECTOR3 TargetPos)
 
 	return;
 }
-
 
 //=============================================================================
 // カメラを取得する

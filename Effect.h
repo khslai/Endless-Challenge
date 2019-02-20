@@ -17,6 +17,7 @@ enum EffectType
 	HitFire,				// ボスに命中される炎
 	HitFire_Phase2,			
 	HitLight,				// チューブを命中する光
+	LockOn,					// ロックオン
 	SummonSwordEffect,		// 剣を召喚する
 	ExplodeFire,			// ボスの攻撃爆発
 	ExplodeFire_Phase2,

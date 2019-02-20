@@ -13,9 +13,10 @@
 // マクロ定義
 //*****************************************************************************
 #define	Texture_SlashTrack	_T("data/Texture/Track.png")	// 読み込むテクスチャファイル名
-#define Surface_Max			(100 * 2)
-#define AlphaDecreaseSpeed	(0.1f)
+#define Surface_Max			(100 * 2)						// 100個のサーフェイス x 2（表、裏両面）
+#define AlphaDecreaseSpeed	(0.1f)							// 軌跡消失の速度
 
+// エフェクトファイル名
 static const EFK_CHAR* FireSwordFileName[] =
 {
 	(const EFK_CHAR*)L"data/Effects/FireSword/FireSword.efk",

@@ -660,6 +660,9 @@ void ReInitSound(void)
 	// フラグ初期化
 	SetIntroOver = false;
 
+	// BGM番号初期化
+	PlayingBGM_No = 0;
+
 	for (int Sound_No = 0; Sound_No < Sound_Max; Sound_No++)
 	{
 		// 流してるサウンドを停止

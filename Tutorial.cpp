@@ -468,7 +468,7 @@ void UpdateTutorial(void)
 //=============================================================================
 // 描画処理
 //=============================================================================
-void DrawTutorial(void)
+void DrawTutorialText(void)
 {
 	LPDIRECT3DDEVICE9 Device = GetDevice();
 	LPDIRECT3DTEXTURE9 BlackScreen_Texture = GetUITexture(BlackScreen);
@@ -476,59 +476,15 @@ void DrawTutorial(void)
 	LPD3DXFONT Font_108 = GetFont(FontSize_108);
 	LPD3DXFONT Font_72 = GetFont(FontSize_72);
 	LPD3DXFONT Font_54 = GetFont(FontSize_54);
-	D3DXMATRIX ScaleMatrix, RotMatrix, TransMatrix;
-	D3DXMATERIAL *pD3DXMat;
 	static int DisappearWidth = 0;
 	RECT rect = { 0, 0, Screen_Width, RectHeight };
 	RECT BossHP = { BossHPTextPos_X, BossHPTextPos_Y, BossHPTextPos_X + RectWidth, BossHPTextPos_Y + RectHeight };
 	GAMEPAD *GamePad = GetGamePad();
 
 	//=================
-	// 立方体
-	//=================
-	if (Cube.Exist == true)
-	{
-		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&Cube.WorldMatrix);
-
-		// スケールを反映
-		D3DXMatrixScaling(&ScaleMatrix, Cube.Scale.x, Cube.Scale.y, Cube.Scale.z);
-		D3DXMatrixMultiply(&Cube.WorldMatrix, &Cube.WorldMatrix, &ScaleMatrix);
-
-		// 回転を反映
-		D3DXMatrixRotationYawPitchRoll(&RotMatrix, Cube.Rot.y, Cube.Rot.x, Cube.Rot.z);
-		D3DXMatrixMultiply(&Cube.WorldMatrix, &Cube.WorldMatrix, &RotMatrix);
-
-		// 移動を反映
-		D3DXMatrixTranslation(&TransMatrix, Cube.Pos.x, Cube.Pos.y, Cube.Pos.z);
-		D3DXMatrixMultiply(&Cube.WorldMatrix, &Cube.WorldMatrix, &TransMatrix);
-
-		// ワールドマトリックスの設定
-		Device->SetTransform(D3DTS_WORLD, &Cube.WorldMatrix);
-
-		// マテリアル情報に対するポインタを取得
-		pD3DXMat = (D3DXMATERIAL*)Cube.MaterialBuffer->GetBufferPointer();
-
-		for (int nCntMat = 0; nCntMat < (int)Cube.MaterialNum; nCntMat++)
-		{
-			// マテリアルの設定
-			Device->SetMaterial(&pD3DXMat[nCntMat].MatD3D);
-
-			// テクスチャの設定
-			Device->SetTexture(0, Cube.Texture[nCntMat]);
-
-			// 描画
-			Cube.Mesh->DrawSubset(nCntMat);
-		}
-
-		// 立方体のカプセルを描画する
-		DrawCapsule(&Cube.HitCapsule, &Cube.WorldMatrix);
-	}
-
-	//=================
 	// チュートリアル文字
 	//=================
-	//Font_54->DrawText(NULL, "Boss(?) HP", -1, &BossHP, DT_LEFT | DT_BOTTOM, WHITE(255));
+	Font_54->DrawText(NULL, "Boss(?) HP", -1, &BossHP, DT_LEFT | DT_BOTTOM, WHITE(255));
 
 	if (TutorialState != DisplayHelp)
 	{
@@ -753,6 +709,60 @@ void DrawTutorial(void)
 				Font_72->DrawText(NULL, "いいえ", -1, &rect, DT_CENTER | DT_VCENTER, WHITE(255));
 			}
 		}
+	}
+
+	return;
+}
+
+//=============================================================================
+// 描画処理
+//=============================================================================
+void DrawTutorialCube(void)
+{
+	LPDIRECT3DDEVICE9 Device = GetDevice();
+	D3DXMATRIX ScaleMatrix, RotMatrix, TransMatrix;
+	D3DXMATERIAL *pD3DXMat;
+
+	//=================
+	// 立方体
+	//=================
+	if (Cube.Exist == true)
+	{
+		// ワールドマトリックスの初期化
+		D3DXMatrixIdentity(&Cube.WorldMatrix);
+
+		// スケールを反映
+		D3DXMatrixScaling(&ScaleMatrix, Cube.Scale.x, Cube.Scale.y, Cube.Scale.z);
+		D3DXMatrixMultiply(&Cube.WorldMatrix, &Cube.WorldMatrix, &ScaleMatrix);
+
+		// 回転を反映
+		D3DXMatrixRotationYawPitchRoll(&RotMatrix, Cube.Rot.y, Cube.Rot.x, Cube.Rot.z);
+		D3DXMatrixMultiply(&Cube.WorldMatrix, &Cube.WorldMatrix, &RotMatrix);
+
+		// 移動を反映
+		D3DXMatrixTranslation(&TransMatrix, Cube.Pos.x, Cube.Pos.y, Cube.Pos.z);
+		D3DXMatrixMultiply(&Cube.WorldMatrix, &Cube.WorldMatrix, &TransMatrix);
+
+		// ワールドマトリックスの設定
+		Device->SetTransform(D3DTS_WORLD, &Cube.WorldMatrix);
+
+		// マテリアル情報に対するポインタを取得
+		pD3DXMat = (D3DXMATERIAL*)Cube.MaterialBuffer->GetBufferPointer();
+
+		for (int nCntMat = 0; nCntMat < (int)Cube.MaterialNum; nCntMat++)
+		{
+			// マテリアルの設定
+			Device->SetMaterial(&pD3DXMat[nCntMat].MatD3D);
+
+			// テクスチャの設定
+			Device->SetTexture(0, Cube.Texture[nCntMat]);
+
+			// 描画
+			Cube.Mesh->DrawSubset(nCntMat);
+		}
+
+		// 立方体のカプセルを描画する
+		DrawCapsule(&Cube.HitCapsule, &Cube.WorldMatrix);
 	}
 
 	return;
