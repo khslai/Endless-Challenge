@@ -35,6 +35,7 @@ enum EffectType
 //*****************************************************************************
 // 構造体定義
 //*****************************************************************************
+// エフェクトコントローラー構造体
 typedef struct
 {
 	EffekseerRendererDX9::Renderer		*Render;		// エフェクトレンダ
@@ -43,6 +44,7 @@ typedef struct
 	int									EffectNum;		// エフェクトの数
 }EFFECTCONTROLLER;
 
+// エフェクト構造体
 typedef struct
 {
 	D3DXVECTOR3							Pos;			// 座標

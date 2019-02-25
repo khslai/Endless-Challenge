@@ -13,6 +13,7 @@
 //*****************************************************************************
 // 構造体定義
 //*****************************************************************************
+// アニメーションセットデータ構造体
 typedef struct
 {
 	LPCSTR				SetName;				// アニメーションセットの名前
@@ -22,6 +23,7 @@ typedef struct
 	float				Damage;					// 与えるダメージ
 }ANIMATIONDATA;
 
+// アニメーション構造体
 typedef struct D3DXANIMATION D3DXANIMATION;
 struct D3DXANIMATION
 {
@@ -42,6 +44,7 @@ struct D3DXANIMATION
 	bool						Cancelable;		// このアニメーションは中断できるかフラグ
 };
 
+// アニメーションコールバック構造体
 struct AnimCallBackHandler : public ID3DXAnimationCallbackHandler
 {
 	// メンバー変数

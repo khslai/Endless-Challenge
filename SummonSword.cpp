@@ -12,6 +12,7 @@
 #include "Effect.h"
 #include "Tutorial.h"
 #include "Input.h"
+#include "Sound.h"
 
 //*****************************************************************************
 // ƒ}ƒNƒ’è‹`
@@ -174,6 +175,8 @@ void UpdateSummonSword(void)
 			{
 				ChangeAnimation(Player->Animation, Rolling, 1.5f, true);
 				SummonSword.State = AttackStart;
+				Set3DSound(SummonSword.Pos, SE3D_BossSlash, E_DS8_FLAG_NONE, true);
+				Set3DSound(SummonSword.Pos, SE3D_SlashFire, E_DS8_FLAG_NONE, true);
 			}
 			break;
 
@@ -187,6 +190,7 @@ void UpdateSummonSword(void)
 			{
 				SummonSword.HitCapsule.P2.y = 0.0f;
 				SetEffect(SummonSword.HitCapsule.P2, ExplodeFire);
+				Set3DSound(SummonSword.HitCapsule.P2, SE3D_ExplodeFire, E_DS8_FLAG_NONE, true);
 				FireSwordCtrl->Manager->StopEffect(SummonSword.EffectID);
 				SummonSword.Use = false;
 			}

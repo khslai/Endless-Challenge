@@ -10,8 +10,8 @@
 // 描画モード
 enum SkinMethod
 {
-	NormalMode,
-	HLSL_Mode,
+	NormalMode,		// 普通モード
+	HLSL_Mode,		// シェーダーモード
 	NONE
 };
 

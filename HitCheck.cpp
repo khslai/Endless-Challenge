@@ -63,228 +63,233 @@ void HitCheck(void)
 		return;
 	}
 
-	// プレイヤーとボス
-	if (Boss->Exist == true)
+	if (GameStage == Stage_Tutorial)
 	{
-		if (PntPntDistance(Player->Pos, Boss->Pos) < pow((Player->HitCapsule.Radius + Boss->HitCapsule.Radius + 20.0f), 2))
+		if (Cube->Exist == true)
 		{
-			DirVec = Player->Pos - Boss->Pos;
-			D3DXVec3Normalize(&DirVec, &DirVec);
-			Player->Pos += DirVec * 2.0f;
-			Player->Pos.y = 0.0f;
-		}
-	}
-
-	if (Cube->Exist == true)
-	{
-		// プレイヤーと謎の立方体
-		// 立方体の地面座標
-		D3DXVECTOR3 CubeGroundPos = D3DXVECTOR3(Cube->Pos.x, 0.0f, Cube->Pos.z);
-		float Distance = PntPntDistance(Player->Pos, CubeGroundPos);
-		if (Distance < pow((Player->HitCapsule.Radius + Cube->HitCapsule.Radius + 15.0f), 2))
-		{
-			DirVec = Player->Pos - CubeGroundPos;
-			D3DXVec3Normalize(&DirVec, &DirVec);
-			Player->Pos += DirVec * 2.0f;
-		}
-
-		// プレイヤーの剣と謎の立方体
-		if (Player->GiveDamage == false && Player->Animation->SlashTrack == true &&
-			CapsuleHitCheck(&Player->Sword->HitCapsule, &Cube->HitCapsule))
-		{
-			// 効果音
-			StopSound(SE3D, SE3D_Slash);
-			Set3DSound(Cube->Pos, SE3D_HitCube, E_DS8_FLAG_NONE, true);
-
-			// エフェクト設置
-			SetEffect(Cube->Pos, HitLight);
-
-			// 耐久値減少
-			if (TutorialState == HelpOver)
+			// プレイヤーと謎の立方体
+			// 立方体の地面座標
+			D3DXVECTOR3 CubeGroundPos = D3DXVECTOR3(Cube->Pos.x, 0.0f, Cube->Pos.z);
+			float Distance = PntPntDistance(Player->Pos, CubeGroundPos);
+			if (Distance < pow((Player->HitCapsule.Radius + Cube->HitCapsule.Radius + 15.0f), 2))
 			{
-				Cube->Durability--;
+				DirVec = Player->Pos - CubeGroundPos;
+				D3DXVec3Normalize(&DirVec, &DirVec);
+				Player->Pos += DirVec * 2.0f;
 			}
 
-			// 立方体が壊された
-			if (Cube->Durability <= 0)
+			// プレイヤーの剣と謎の立方体
+			if (Player->GiveDamage == false && Player->Animation->SlashTrack == true &&
+				CapsuleHitCheck(&Player->Sword->HitCapsule, &Cube->HitCapsule))
 			{
-				Set3DSound(Cube->Pos, SE3D_ExplosionWind, E_DS8_FLAG_NONE, true);
-				Set3DSound(Cube->Pos, SE3D_DestroyCube, E_DS8_FLAG_NONE, true);
-				SetEffect(Cube->Pos, BossDebut);
-				Cube->Durability = 0;
-				Cube->Exist = false;
+				// 効果音
+				StopSound(SE3D, SE3D_Slash);
+				Set3DSound(Cube->Pos, SE3D_HitCube, E_DS8_FLAG_NONE, true);
+
+				// エフェクト設置
+				SetEffect(Cube->Pos, HitLight);
+
+				// 耐久値減少
+				if (TutorialState == HelpOver)
+				{
+					Cube->Durability--;
+				}
+
+				// 立方体が壊された
+				if (Cube->Durability <= 0)
+				{
+					Set3DSound(Cube->Pos, SE3D_ExplosionWind, E_DS8_FLAG_NONE, true);
+					Set3DSound(Cube->Pos, SE3D_DestroyCube, E_DS8_FLAG_NONE, true);
+					SetEffect(Cube->Pos, BossDebut);
+					Cube->Durability = 0;
+					Cube->Exist = false;
+				}
+				Player->GiveDamage = true;
 			}
-			Player->GiveDamage = true;
 		}
 	}
-
-	// プレイヤーの剣とボス
-	if (Boss->Animation->CurrentAnimID != BossAct_PowerUp && Boss->Animation->CurrentAnimID != BossAct_BossDeath)
+	else if (GameStage == Stage_Game)
 	{
-		if (Player->GiveDamage == false && Player->Animation->SlashTrack == true &&
-			(CapsuleHitCheck(&Player->Sword->HitCapsule, &Boss->HitCapsule) ||
-				PntPntDistance(Player->Sword->HitCapsule.P1, Boss->CenterPos) < pow(Player->HitCapsule.Radius + Boss->HitCapsule.Radius, 2)))
+		// プレイヤーとボス
+		if (Boss->Exist == true)
+		{
+			if (PntPntDistance(Player->Pos, Boss->Pos) < pow((Player->HitCapsule.Radius + Boss->HitCapsule.Radius + 20.0f), 2))
+			{
+				DirVec = Player->Pos - Boss->Pos;
+				D3DXVec3Normalize(&DirVec, &DirVec);
+				Player->Pos += DirVec * 2.0f;
+				Player->Pos.y = 0.0f;
+			}
+		}
+
+		// プレイヤーの剣とボス
+		if (Boss->Animation->CurrentAnimID != BossAct_PowerUp && Boss->Animation->CurrentAnimID != BossAct_BossDeath)
+		{
+			if (Player->GiveDamage == false && Player->Animation->SlashTrack == true &&
+				(CapsuleHitCheck(&Player->Sword->HitCapsule, &Boss->HitCapsule) ||
+					PntPntDistance(Player->Sword->HitCapsule.P1, Boss->CenterPos) < pow(Player->HitCapsule.Radius + Boss->HitCapsule.Radius, 2)))
+			{
+				// 効果音
+				StopSound(SE3D, SE3D_Slash);
+				StopSound(SE3D, SE3D_Slash2);
+				Set3DSound(Boss->CenterPos, SE3D_HitHuman, E_DS8_FLAG_NONE, true);
+
+				// HP減少
+				Boss->HP -= Player->Damage;
+				if (Boss->HP <= 0.0f)
+				{
+					Boss->HP = 0.0f;
+				}
+
+				// 現在のアニメーションが中断できる
+				if (Boss->Animation->Cancelable == true)
+				{
+					ChangeAnimation(Boss->Animation, BossAct_HitReact, 1.5f, true);
+					Boss->Animation->NextAnimID = BossAct_Idle;
+				}
+
+				// エフェクト設置
+				SetEffect(Boss->CenterPos, HitBlood);
+
+				Player->GiveDamage = true;
+			}
+		}
+
+		// ボスの剣とプレイヤー
+		if (Boss->GiveDamage == false && Boss->Animation->SlashTrack == true &&
+			Player->Invincible == false && CapsuleHitCheck(&Boss->Sword->HitCapsule, &Player->HitCapsule))
 		{
 			// 効果音
-			StopSound(SE3D, SE3D_Slash);
-			StopSound(SE3D, SE3D_Slash2);
-			Set3DSound(Boss->CenterPos, SE3D_HitHuman, E_DS8_FLAG_NONE, true);
+			Set3DSound(Player->CenterPos, SE3D_HitFire, E_DS8_FLAG_NONE, true);
 
 			// HP減少
-			Boss->HP -= Player->Damage;
-			if (Boss->HP <= 0.0f)
+			if (Difficulty == Easy)
 			{
-				Boss->HP = 0.0f;
+				Player->HP -= Boss->Animation->AnimData[Boss->Animation->CurrentAnimID].Damage * 0.7f;
+			}
+			else
+			{
+				Player->HP -= Boss->Animation->AnimData[Boss->Animation->CurrentAnimID].Damage;
+			}
+			if (Player->HP <= 0.0f)
+			{
+				Player->HP = 0.0f;
 			}
 
-			// 現在のアニメーションが中断できる
-			if (Boss->Animation->Cancelable == true)
+			if (Player->Animation->CurrentAnimID != Rolling && Player->Animation->CurrentAnimID != PlayerDeath)
 			{
-				ChangeAnimation(Boss->Animation, BossAct_HitReact, 1.5f, true);
-				Boss->Animation->NextAnimID = BossAct_Idle;
+				ChangeAnimation(Player->Animation, HitReact, 1.0f, true);
+				Player->Animation->NextAnimID = Idle;
 			}
 
 			// エフェクト設置
-			SetEffect(Boss->CenterPos, HitBlood);
-
-			Player->GiveDamage = true;
-		}
-	}
-
-	// ボスの剣とプレイヤー
-	if (Boss->GiveDamage == false && Boss->Animation->SlashTrack == true &&
-		Player->Invincible == false && CapsuleHitCheck(&Boss->Sword->HitCapsule, &Player->HitCapsule))
-	{
-		// 効果音
-		Set3DSound(Player->CenterPos, SE3D_HitFire, E_DS8_FLAG_NONE, true);
-
-		// HP減少
-		if (Difficulty == Easy)
-		{
-			Player->HP -= Boss->Animation->AnimData[Boss->Animation->CurrentAnimID].Damage * 0.7f;
-		}
-		else
-		{
-			Player->HP -= Boss->Animation->AnimData[Boss->Animation->CurrentAnimID].Damage;
-		}
-		if (Player->HP <= 0.0f)
-		{
-			Player->HP = 0.0f;
-		}
-
-		if (Player->Animation->CurrentAnimID != Rolling && Player->Animation->CurrentAnimID != PlayerDeath)
-		{
-			ChangeAnimation(Player->Animation, HitReact, 1.0f, true);
-			Player->Animation->NextAnimID = Idle;
-		}
-
-		// エフェクト設置
-		if (Boss->Phase == Phase1)
-		{
-			SetEffect(Player->Pos, HitFire);
-		}
-		else if (Boss->Phase == Phase2)
-		{
-			SetEffect(Player->CenterPos, HitFire_Phase2);
-		}
-
-		Boss->GiveDamage = true;
-		Player->BeDamaged = true;
-	}
-
-	// ボスの弾とプレイヤー
-	if (Player->BeDamaged == false)
-	{
-		for (int Bullet_No = 0; Bullet_No < BulletMax; Bullet_No++)
-		{
-			Bullet = GetBullet(Bullet_No);
-			if (Bullet->Use == true)
+			if (Boss->Phase == Phase1)
 			{
-				// 直撃
-				if (Bullet->State == Shot)
+				SetEffect(Player->Pos, HitFire);
+			}
+			else if (Boss->Phase == Phase2)
+			{
+				SetEffect(Player->CenterPos, HitFire_Phase2);
+			}
+
+			Boss->GiveDamage = true;
+			Player->BeDamaged = true;
+		}
+
+		// ボスの弾とプレイヤー
+		if (Player->BeDamaged == false)
+		{
+			for (int Bullet_No = 0; Bullet_No < BulletMax; Bullet_No++)
+			{
+				Bullet = GetBullet(Bullet_No);
+				if (Bullet->Use == true)
 				{
-					// 弾とプレイヤー距離計算
-					Distance = PntSegDistance(Bullet->Pos, Player->HitCapsule.P1, Player->HitCapsule.P2);
-
-					if (Distance < pow((Bullet->Radius + Player->HitCapsule.Radius), 2))
+					// 直撃
+					if (Bullet->State == Shot)
 					{
-						// 命中エフェクトを設置する
-						Bullet->State = SetBurnningEffect;
+						// 弾とプレイヤー距離計算
+						Distance = PntSegDistance(Bullet->Pos, Player->HitCapsule.P1, Player->HitCapsule.P2);
 
-						// 効果音
-						Set3DSound(Player->Pos, SE3D_Burnning, E_DS8_FLAG_NONE, true);
-
-						// HP減少
-						Player->HP -= FireBallDamage;
-						if (Player->HP <= 0.0f)
+						if (Distance < pow((Bullet->Radius + Player->HitCapsule.Radius), 2))
 						{
-							Player->HP = 0.0f;
-						}
-						else
-						{
-							// 倒れる
-							ChangeAnimation(Player->Animation, FallingBack, 1.0f, false);
-							Player->Animation->NextAnimID = FallToStand;
-						}
+							// 命中エフェクトを設置する
+							Bullet->State = SetBurnningEffect;
 
-						Player->BeDamaged = true;
+							// 効果音
+							Set3DSound(Player->Pos, SE3D_Burnning, E_DS8_FLAG_NONE, true);
+
+							// HP減少
+							Player->HP -= FireBallDamage;
+							if (Player->HP <= 0.0f)
+							{
+								Player->HP = 0.0f;
+							}
+							else
+							{
+								// 倒れる
+								ChangeAnimation(Player->Animation, FallingBack, 1.0f, false);
+								Player->Animation->NextAnimID = FallToStand;
+							}
+
+							Player->BeDamaged = true;
+						}
 					}
-				}
-				// 踏まれる爆発
-				else if (Bullet->State == WaitDisappear)
-				{
-					Distance = PntPntDistance(Bullet->Pos, Player->Pos);
-					if (Distance < pow(BurnningRange, 2))
+					// 踏まれる爆発
+					else if (Bullet->State == WaitDisappear)
 					{
-						// 爆発エフェクトを設置する
-						Bullet->State = BurnningExplode;
-
-						// HP減少
-						Player->HP -= FireBallDamage;
-						if (Player->HP <= 0.0f)
+						Distance = PntPntDistance(Bullet->Pos, Player->Pos);
+						if (Distance < pow(BurnningRange, 2))
 						{
-							Player->HP = 0.0f;
-						}
-						else
-						{
-							// 吹っ飛ばされる
-							ChangeAnimation(Player->Animation, FlyingBack, 1.0f, false);
-							Player->Animation->NextAnimID = FallToStand;
+							// 爆発エフェクトを設置する
+							Bullet->State = BurnningExplode;
 
-							// 飛ぶ方向を計算する
-							Player->FlyingBackDir = Player->Pos - Bullet->Pos;
-							D3DXVec3Normalize(&Player->FlyingBackDir, &Player->FlyingBackDir);
-							Player->FlyingBackDir.y = 0.0f;
-						}
+							// HP減少
+							Player->HP -= FireBallDamage;
+							if (Player->HP <= 0.0f)
+							{
+								Player->HP = 0.0f;
+							}
+							else
+							{
+								// 吹っ飛ばされる
+								ChangeAnimation(Player->Animation, FlyingBack, 1.0f, false);
+								Player->Animation->NextAnimID = FallToStand;
 
-						Player->BeDamaged = true;
+								// 飛ぶ方向を計算する
+								Player->FlyingBackDir = Player->Pos - Bullet->Pos;
+								D3DXVec3Normalize(&Player->FlyingBackDir, &Player->FlyingBackDir);
+								Player->FlyingBackDir.y = 0.0f;
+							}
+
+							Player->BeDamaged = true;
+						}
 					}
-				}
-				// 消える爆発
-				else if (Bullet->State == DisappearExplode)
-				{
-					Distance = PntPntDistance(Bullet->Pos, Player->Pos);
-					if (Distance < pow(ExplodeRange, 2))
+					// 消える爆発
+					else if (Bullet->State == DisappearExplode)
 					{
-						// HP減少
-						Player->HP -= FireBallDamage;
-						if (Player->HP <= 0.0f)
+						Distance = PntPntDistance(Bullet->Pos, Player->Pos);
+						if (Distance < pow(ExplodeRange, 2))
 						{
-							Player->HP = 0.0f;
-						}
-						else
-						{
-							// 吹っ飛ばされる
-							ChangeAnimation(Player->Animation, FlyingBack, 1.0f, false);
-							Player->Animation->NextAnimID = FallToStand;
+							// HP減少
+							Player->HP -= FireBallDamage;
+							if (Player->HP <= 0.0f)
+							{
+								Player->HP = 0.0f;
+							}
+							else
+							{
+								// 吹っ飛ばされる
+								ChangeAnimation(Player->Animation, FlyingBack, 1.0f, false);
+								Player->Animation->NextAnimID = FallToStand;
 
-							// 飛ぶ方向を計算する
-							Player->FlyingBackDir = Player->Pos - Bullet->Pos;
-							D3DXVec3Normalize(&Player->FlyingBackDir, &Player->FlyingBackDir);
-							Player->FlyingBackDir.y = 0.0f;
-						}
+								// 飛ぶ方向を計算する
+								Player->FlyingBackDir = Player->Pos - Bullet->Pos;
+								D3DXVec3Normalize(&Player->FlyingBackDir, &Player->FlyingBackDir);
+								Player->FlyingBackDir.y = 0.0f;
+							}
 
-						Player->BeDamaged = true;
+							Player->BeDamaged = true;
+						}
 					}
 				}
 			}
